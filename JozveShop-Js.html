@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JozveShop-JS</title>
+    <!-- Favicon / لوگوی اختصاصی نئونی در تب مرورگر -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%230b0f19' stroke='%2300f0ff' stroke-width='4'/><path d='M30 35 L70 35 L70 70 L30 70 Z' fill='none' stroke='%23ff007f' stroke-width='5' stroke-linejoin='round'/><path d='M38 45 L62 45 M38 55 L58 55' stroke='%2300f0ff' stroke-width='4' stroke-linecap='round'/><circle cx='70' cy='35' r='6' fill='%239d00ff'/></svg>">
+    
+    <!-- Font Vazirmatn -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #121829;
+            --neon-pink: #ff007f;
+            --neon-blue: #00f0ff;
+            --neon-purple: #9d00ff;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hidden { display: none !important; }
+
+        .neon-text-pink {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.6), 0 0 20px rgba(255, 0, 127, 0.3);
+        }
+
+        .neon-text-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .neon-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            transition: 0.3s ease;
+        }
+
+        .neon-box:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            border-color: var(--neon-blue);
+        }
+
+        .neon-btn {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+            transition: 0.3s;
+        }
+
+        .neon-btn:hover {
+            box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple);
+            transform: translateY(-2px);
+        }
+
+        .neon-btn-danger {
+            background: linear-gradient(135deg, #ff0055, #ff007f);
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+        }
+        .neon-btn-danger:hover {
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        /* Auth Screen */
+        #auth-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a103c 0%, var(--bg-color) 70%);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .auth-switch span {
+            color: var(--neon-blue);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Main App Layout */
+        #app-screen {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        aside {
+            width: 270px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px auto;
+            filter: drop-shadow(0 0 8px var(--neon-blue));
+        }
+
+        .logo-area h1 {
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+
+        .menu-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .menu-links li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+        }
+
+        .menu-links li:hover, .menu-links li.active {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-blue);
+            border-right: 4px solid var(--neon-blue);
+        }
+
+        .user-info-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-bar input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            width: 300px;
+            outline: none;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            background: rgba(157, 0, 255, 0.2);
+            color: #d8b4fe;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            border: 1px solid rgba(157, 0, 255, 0.4);
+        }
+
+        .admin-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .admin-section h3 {
+            margin-bottom: 20px;
+            color: var(--neon-pink);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        table th {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+        }
+
+        table td {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- صفحه ورود و ثبت نام -->
+    <div id="auth-screen">
+        <div class="auth-card neon-box">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <svg class="logo-icon" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#00f0ff" stroke-width="4"/>
+                    <path d="M30 35 L70 35 L70 70 L30 70 Z" fill="none" stroke="#ff007f" stroke-width="5" stroke-linejoin="round"/>
+                    <path d="M38 45 L62 45 M38 55 L58 55" stroke="#00f0ff" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="70" cy="35" r="6" fill="#9d00ff"/>
+                </svg>
+            </div>
+            <h2 class="neon-text-blue">JozveShop-JS</h2>
+            
+            <div id="login-form">
+                <div class="form-group">
+                    <label>نام کاربری</label>
+                    <input type="text" id="login-username" placeholder="مثلا: نام">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button class="neon-btn" style="width: 100%;" onclick="handleLogin()">ورود به سایت</button>
+                <div class="auth-switch">حساب ندارید؟ <span onclick="toggleAuthMode()">ثبت نام کنید</span></div>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <div class="form-group">
+                    <label>نام کاربری</label>
+                    <input type="text" id="reg-username" placeholder="یک نام کاربری انتخاب کنید">
+                </div>
+                <div class="form-group">
+                    <label>رمز عبور</label>
+                    <input type="password" id="reg-password" placeholder="••••••••">
+                </div>
+                <button class="neon-btn" style="width: 100%;" onclick="handleRegister()">ثبت‌نام در سایت</button>
+                <div class="auth-switch">قبلا ثبت‌نام کرده اید؟ <span onclick="toggleAuthMode()">وارد شوید</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحه اصلی وب‌سایت -->
+    <div id="app-screen" class="hidden">
+        <!-- منوی کناری (Sidebar) -->
+        <aside>
+            <div>
+                <div class="logo-area">
+                    <svg class="logo-icon" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#00f0ff" stroke-width="4"/>
+                        <path d="M30 35 L70 35 L70 70 L30 70 Z" fill="none" stroke="#ff007f" stroke-width="5" stroke-linejoin="round"/>
+                        <path d="M38 45 L62 45 M38 55 L58 55" stroke="#00f0ff" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="70" cy="35" r="6" fill="#9d00ff"/>
+                    </svg>
+                    <h1 class="neon-text-pink">JozveShop-JS</h1>
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">مرجع دانلود جزوات آموزشی</p>
+                </div>
+                <ul class="menu-links" id="sidebar-menu">
+                    <!-- دسته‌بندی‌ها به صورت داینامیک لود می‌شوند -->
+                </ul>
+            </div>
+            
+            <div class="user-info-box">
+                <div>
+                    <span id="current-username" style="font-weight: 600; font-size: 0.9rem; display: block;">کاربر</span>
+                    <span id="current-role" style="font-size: 0.75rem; color: var(--neon-blue);">عضو عادی</span>
+                </div>
+                <button onclick="logout()" class="neon-btn neon-btn-danger" style="padding: 6px 10px; font-size: 0.75rem;" title="خروج"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- محتوای اصلی -->
+        <main>
+            <div class="top-bar">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="جستجوی جزوه بر اساس عنوان..." oninput="searchJozves()">
+                </div>
+            </div>
+
+            <!-- پنل مدیریت (ادمین) -->
+            <div id="admin-panel" class="hidden">
+                <!-- آمار سایت -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>تعداد جزوات</h4>
+                        <span id="stat-jozves-count">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4>تعداد دسته‌ها</h4>
+                        <span id="stat-categories-count">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h4>کاربران ثبت‌نام شده</h4>
+                        <span id="stat-users-count">0</span>
+                    </div>
+                </div>
+
+                <!-- مدیریت دسته‌بندی‌ها -->
+                <div class="admin-section">
+                    <h3><i class="fa-solid fa-folder-plus"></i> مدیریت دسته‌بندی‌ها</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="new-category-name" placeholder="نام دسته‌بندی جدید (مثلا: شیمی)" style="flex: 1; padding:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; outline:none;">
+                        <button class="neon-btn" onclick="addCategory()">افزودن دسته</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>نام دسته‌بندی</th>
+                                <th>تعداد جزوات</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- افزودن جزوه جدید -->
+                <div class="admin-section">
+                    <h3><i class="fa-solid fa-file-circle-plus"></i> افزودن جزوه جدید (PDF)</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <input type="text" id="new-title" placeholder="عنوان جزوه" style="padding:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; outline:none;">
+                        
+                        <select id="new-category-select" style="padding:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; outline:none;">
+                            <!-- لیست دسته‌بندی‌ها پر می‌شود -->
+                        </select>
+
+                        <input type="text" id="new-link" placeholder="لینک مستقیم فایل PDF" style="padding:10px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; outline:none;">
+                    </div>
+                    <button class="neon-btn" onclick="addJozve()">ثبت و انتشار جزوه</button>
+                </div>
+
+                <!-- لیست کاربران -->
+                <div class="admin-section">
+                    <h3><i class="fa-solid fa-users"></i> لیست کاربران ثبت‌نام شده</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>شناسه</th>
+                                <th>نام کاربری</th>
+                                <th>نوع دسترسی</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- مدیریت جزوات -->
+                <div class="admin-section">
+                    <h3><i class="fa-solid fa-list-check"></i> مدیریت جزوات موجود</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>عنوان جزوه</th>
+                                <th>دسته</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-jozve-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- بخش نمایش جزوات -->
+            <div id="user-dashboard">
+                <h2 class="neon-text-blue" style="margin-bottom: 20px;" id="section-title">جزوات آموزشی</h2>
+                <div class="grid-container" id="jozve-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let users = JSON.parse(localStorage.getItem('js_users')) || [
+            { username: 'parsa', password: '1391', role: 'admin' },
+            { username: 'ali', password: '123', role: 'user' }
+        ];
+
+        let categories = JSON.parse(localStorage.getItem('js_categories')) || ['ریاضی', 'برنامه‌نویسی', 'فیزیک', 'عمومی'];
+
+        let jozves = JSON.parse(localStorage.getItem('js_jozves')) || [
+            { id: 1, title: 'جزوه جامع جاوا اسکریپت پیشرفته', category: 'برنامه‌نویسی', link: '#' },
+            { id: 2, title: 'فرمول‌های طلایی ریاضی کنکور', category: 'ریاضی', link: '#' },
+            { id: 3, title: 'مکانیک کوانتوم به زبان ساده', category: 'فیزیک', link: '#' }
+        ];
+
+        let currentUser = null;
+        let currentFilter = 'all';
+
+        function toggleAuthMode() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('register-form').classList.toggle('hidden');
+        }
+
+        // ورود دقیق ادمین
+        function handleLogin() {
+            const u = document.getElementById('login-username').value.trim().toLowerCase();
+            const p = document.getElementById('login-password').value.trim();
+
+            if (u === 'parsa' && p === '1391') {
+                currentUser = { username: 'parsa', password: '1391', role: 'admin' };
+                initApp();
+                return;
+            }
+
+            const foundUser = users.find(user => user.username.toLowerCase() === u && user.password === p);
+            if (foundUser) {
+                currentUser = foundUser;
+                initApp();
+            } else {
+                alert('نام کاربری یا رمز عبور اشتباه است!');
+            }
+        }
+
+        function handleRegister() {
+            const u = document.getElementById('reg-username').value.trim();
+            const p = document.getElementById('reg-password').value.trim();
+
+            if (!u || !p) {
+                alert('لطفا تمامی فیلدها را پر کنید.');
+                return;
+            }
+
+            if (u.toLowerCase() === 'parsa') {
+                alert('این نام کاربری متعلق به ادمین سیستم است.');
+                return;
+            }
+
+            if (users.some(user => user.username.toLowerCase() === u.toLowerCase())) {
+                alert('این نام کاربری قبلا ثبت‌نام کرده است.');
+                return;
+            }
+
+            const newUser = { username: u, password: p, role: 'user' };
+            users.push(newUser);
+            localStorage.setItem('js_users', JSON.stringify(users));
+            
+            alert('ثبت‌نام با موفقیت انجام شد. حالا وارد شوید.');
+            toggleAuthMode();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-screen').classList.remove('hidden');
+            
+            document.getElementById('current-username').innerText = currentUser.username;
+            document.getElementById('current-role').innerText = currentUser.role === 'admin' ? 'مدیر سیستم (Admin)' : 'کاربر عادی';
+
+            if (currentUser.role === 'admin') {
+                document.getElementById('admin-panel').classList.remove('hidden');
+                renderAdminPanel();
+            } else {
+                document.getElementById('admin-panel').classList.add('hidden');
+            }
+
+            renderCategories();
+            renderJozves();
+        }
+
+        function renderCategories() {
+            const menu = document.getElementById('sidebar-menu');
+            let html = `<li class="${currentFilter === 'all' ? 'active' : ''}" onclick="filterCategory('all', this)"><i class="fa-solid fa-house"></i> همه جزوات</li>`;
+            
+            categories.forEach(cat => {
+                html += `<li class="${currentFilter === cat ? 'active' : ''}" onclick="filterCategory('${cat}', this)"><i class="fa-solid fa-folder"></i> ${cat}</li>`;
+            });
+            menu.innerHTML = html;
+
+            // آپدیت منوی انتخاب دسته در فرم افزودن جزوه
+            const catSelect = document.getElementById('new-category-select');
+            if(catSelect) {
+                catSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+        }
+
+        function filterCategory(cat, element) {
+            currentFilter = cat;
+            document.querySelectorAll('.menu-links li').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            document.getElementById('section-title').innerText = cat === 'all' ? 'جزوات آموزشی' : `دسته‌بندی: ${cat}`;
+            renderJozves();
+        }
+
+        function renderJozves() {
+            const grid = document.getElementById('jozve-grid');
+            const searchText = document.getElementById('search-input').value.toLowerCase();
+            
+            let filtered = jozves.filter(j => {
+                const matchesCategory = currentFilter === 'all' || j.category === currentFilter;
+                const matchesSearch = j.title.toLowerCase().includes(searchText);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 40px;">هیچ جزوه‌ای در این بخش یافت نشد.</p>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(j => {
+                html += `
+                    <div class="card neon-box">
+                        <div>
+                            <span class="badge">${j.category}</span>
+                            <h3>${j.title}</h3>
+                            <p>فایل استاندارد PDF آماده دریافت مستقیم.</p>
+                        </div>
+                        <a href="${j.link !== '#' ? j.link : '#'}" target="_blank" onclick="alert('شروع دانلود جزوه: ${j.title}')" class="neon-btn" style="text-align: center; text-decoration: none; display: block;"><i class="fa-solid fa-download"></i> دانلود PDF</a>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function searchJozves() {
+            renderJozves();
+        }
+
+        // افزودن دسته‌بندی جدید توسط ادمین
+        function addCategory() {
+            const catInput = document.getElementById('new-category-name');
+            const catName = catInput.value.trim();
+
+            if (!catName) {
+                alert('لطفاً نام دسته‌بندی را وارد کنید.');
+                return;
+            }
+
+            if (categories.includes(catName)) {
+                alert('این دسته‌بندی از قبل وجود دارد.');
+                return;
+            }
+
+            categories.push(catName);
+            localStorage.setItem('js_categories', JSON.stringify(categories));
+            catInput.value = '';
+
+            renderCategories();
+            renderAdminPanel();
+            alert('دسته‌بندی جدید اضافه شد!');
+        }
+
+        // حذف دسته‌بندی توسط ادمین
+        function deleteCategory(catName) {
+            if (confirm(`آیا از حذف دسته "${catName}" و تمامی جزوات مربوط به آن اطمینان دارید؟`)) {
+                categories = categories.filter(c => c !== catName);
+                jozves = jozves.filter(j => j.category !== catName);
+                
+                localStorage.setItem('js_categories', JSON.stringify(categories));
+                localStorage.setItem('js_jozves', JSON.stringify(jozves));
+
+                if (currentFilter === catName) currentFilter = 'all';
+
+                renderCategories();
+                renderJozves();
+                renderAdminPanel();
+            }
+        }
+
+        // افزودن جزوه جدید
+        function addJozve() {
+            const title = document.getElementById('new-title').value.trim();
+            const category = document.getElementById('new-category-select').value;
+            const link = document.getElementById('new-link').value.trim() || '#';
+
+            if (!title) {
+                alert('عنوان جزوه الزامی است.');
+                return;
+            }
+
+            const newJozve = { id: Date.now(), title, category, link };
+            jozves.push(newJozve);
+            localStorage.setItem('js_jozves', JSON.stringify(jozves));
+
+            document.getElementById('new-title').value = '';
+            document.getElementById('new-link').value = '';
+
+            renderJozves();
+            renderAdminPanel();
+            alert('جزوه جدید با موفقیت قرار داده شد!');
+        }
+
+        function deleteJozve(id) {
+            if (confirm('آیا از حذف این جزوه اطمینان دارید؟')) {
+                jozves = jozves.filter(j => j.id !== id);
+                localStorage.setItem('js_jozves', JSON.stringify(jozves));
+                renderJozves();
+                renderAdminPanel();
+            }
+        }
+
+        function renderAdminPanel() {
+            // آمار
+            document.getElementById('stat-jozves-count').innerText = jozves.length;
+            document.getElementById('stat-categories-count').innerText = categories.length;
+            document.getElementById('stat-users-count').innerText = users.length;
+
+            // جدول مدیریت دسته‌ها
+            const catTable = document.getElementById('categories-table-body');
+            let cHtml = '';
+            categories.forEach(c => {
+                const count = jozves.filter(j => j.category === c).length;
+                cHtml += `
+                    <tr>
+                        <td>${c}</td>
+                        <td>${count} جزوه</td>
+                        <td>
+                            <button class="neon-btn neon-btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteCategory('${c}')"><i class="fa-solid fa-trash"></i> حذف دسته</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            catTable.innerHTML = cHtml;
+
+            // جدول کاربران
+            const userTable = document.getElementById('users-table-body');
+            let uHtml = `<tr><td>#1</td><td>parsa (ادمین اصلی)</td><td><span style="color: var(--neon-pink)">admin</span></td></tr>`;
+            
+            users.filter(u => u.username !== 'parsa').forEach((u, index) => {
+                uHtml += `
+                    <tr>
+                        <td>#${index + 2}</td>
+                        <td>${u.username}</td>
+                        <td><span style="color: var(--neon-blue)">user</span></td>
+                    </tr>
+                `;
+            });
+            userTable.innerHTML = uHtml;
+
+            // جدول مدیریت جزوات
+            const jozveTable = document.getElementById('admin-jozve-table-body');
+            let jHtml = '';
+            jozves.forEach(j => {
+                jHtml += `
+                    <tr>
+                        <td>${j.title}</td>
+                        <td><span class="badge" style="margin:0">${j.category}</span></td>
+                        <td>
+                            <button class="neon-btn neon-btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteJozve(${j.id})"><i class="fa-solid fa-trash"></i> حذف جزوه</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            jozveTable.innerHTML = jHtml;
+        }
+    </script>
+</body>
+</html>
